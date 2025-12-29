@@ -22,9 +22,7 @@ export const listProjects = query({
       projects.map(async (project) => {
         let thumbnailUrl = null;
         if (project.thumbnailId) {
-          thumbnailUrl = await ctx.storage.getUrl(
-            project.thumbnailId as string,
-          );
+          thumbnailUrl = await ctx.storage.getUrl(project.thumbnailId);
         }
         return { ...project, thumbnailUrl };
       }),
@@ -45,7 +43,7 @@ export const getProject = query({
 
     let thumbnailUrl = null;
     if (project.thumbnailId) {
-      thumbnailUrl = await ctx.storage.getUrl(project.thumbnailId as string);
+      thumbnailUrl = await ctx.storage.getUrl(project.thumbnailId);
     }
 
     return { ...project, thumbnailUrl };
@@ -65,18 +63,13 @@ export const createProject = mutation({
     }
 
     const now = Date.now();
-    const insertData: Record<string, unknown> = {
+    const projectId = await ctx.db.insert("projects", {
       userId,
       name: args.name,
+      description: args.description,
       createdAt: now,
       updatedAt: now,
-    };
-
-    if (args.description !== undefined) {
-      insertData.description = args.description;
-    }
-
-    const projectId = await ctx.db.insert("projects", insertData as never);
+    });
 
     return projectId;
   },
@@ -108,8 +101,12 @@ export const deleteProject = mutation({
       .collect();
 
     for (const image of images) {
-      await ctx.storage.delete(image.storageId as string);
-      await ctx.db.delete(image._id as never);
+      try {
+        await ctx.storage.delete(image.storageId);
+      } catch {
+        // Storage file may not exist, continue
+      }
+      await ctx.db.delete(image._id);
     }
 
     // Delete all edits associated with the project
@@ -120,14 +117,22 @@ export const deleteProject = mutation({
 
     for (const edit of edits) {
       if (edit.maskStorageId) {
-        await ctx.storage.delete(edit.maskStorageId as string);
+        try {
+          await ctx.storage.delete(edit.maskStorageId);
+        } catch {
+          // Storage file may not exist, continue
+        }
       }
-      await ctx.db.delete(edit._id as never);
+      await ctx.db.delete(edit._id);
     }
 
     // Delete the project thumbnail if exists
     if (project.thumbnailId) {
-      await ctx.storage.delete(project.thumbnailId as string);
+      try {
+        await ctx.storage.delete(project.thumbnailId);
+      } catch {
+        // Storage file may not exist, continue
+      }
     }
 
     // Delete the project

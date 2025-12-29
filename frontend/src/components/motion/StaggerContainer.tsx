@@ -13,7 +13,7 @@ interface StaggerContainerProps {
 
 const containerVariants = (
   staggerDelay: number,
-  delayChildren: number
+  delayChildren: number,
 ): Variants => ({
   hidden: { opacity: 0 },
   visible: {
@@ -81,7 +81,9 @@ export function StaggerItem({
 }) {
   return (
     <motion.div
-      variants={variant === "scale" ? staggerItemScaleVariants : staggerItemVariants}
+      variants={
+        variant === "scale" ? staggerItemScaleVariants : staggerItemVariants
+      }
       className={className}
     >
       {children}

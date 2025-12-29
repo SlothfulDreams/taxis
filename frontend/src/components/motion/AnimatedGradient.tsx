@@ -32,30 +32,30 @@ export function AnimatedGradient({
 
   const backgroundPosition = useTransform(
     smoothTime,
-    (t) => `${Math.sin(t) * 50 + 50}% ${Math.cos(t) * 50 + 50}%`
+    (t) => `${Math.sin(t) * 50 + 50}% ${Math.cos(t) * 50 + 50}%`,
   );
 
   const meshGradient = `
-    radial-gradient(at 40% 20%, oklch(0.2 0.05 290) 0px, transparent 50%),
-    radial-gradient(at 80% 0%, oklch(0.15 0.04 320) 0px, transparent 50%),
-    radial-gradient(at 0% 50%, oklch(0.18 0.03 85) 0px, transparent 50%),
-    radial-gradient(at 80% 50%, oklch(0.12 0.04 290) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, oklch(0.15 0.05 280) 0px, transparent 50%),
-    radial-gradient(at 80% 100%, oklch(0.1 0.03 320) 0px, transparent 50%),
-    oklch(0.08 0.02 280)
+    radial-gradient(at 40% 20%, oklch(0.12 0.03 265) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, oklch(0.1 0.025 285) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, oklch(0.11 0.02 75) 0px, transparent 50%),
+    radial-gradient(at 80% 50%, oklch(0.09 0.025 265) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, oklch(0.1 0.03 265) 0px, transparent 50%),
+    radial-gradient(at 80% 100%, oklch(0.08 0.02 285) 0px, transparent 50%),
+    oklch(0.06 0.015 265)
   `;
 
   const radialGradient = `
-    radial-gradient(ellipse at center, oklch(0.15 0.04 290) 0%, oklch(0.08 0.02 280) 70%)
+    radial-gradient(ellipse at center, oklch(0.1 0.025 265) 0%, oklch(0.06 0.015 265) 70%)
   `;
 
   const conicGradient = `
     conic-gradient(from 0deg at 50% 50%,
-      oklch(0.12 0.03 280),
-      oklch(0.15 0.05 290),
-      oklch(0.12 0.04 320),
-      oklch(0.1 0.03 85),
-      oklch(0.12 0.03 280)
+      oklch(0.08 0.02 265),
+      oklch(0.1 0.03 275),
+      oklch(0.08 0.025 285),
+      oklch(0.07 0.02 75),
+      oklch(0.08 0.02 265)
     )
   `;
 
@@ -79,71 +79,73 @@ export function AnimatedGradient({
   );
 }
 
-// Floating orbs for background decoration
+// Floating orbs - subtle and refined
 export function FloatingOrbs({ className }: { className?: string }) {
   return (
-    <div className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)}>
-      {/* Violet orb */}
+    <div
+      className={cn(
+        "pointer-events-none absolute inset-0 overflow-hidden",
+        className,
+      )}
+    >
+      {/* Primary orb - subtle violet */}
       <motion.div
-        className="absolute h-[500px] w-[500px] rounded-full opacity-30"
+        className="absolute h-[600px] w-[600px] rounded-full"
         style={{
           background:
-            "radial-gradient(circle, oklch(0.5 0.2 290) 0%, transparent 70%)",
+            "radial-gradient(circle, oklch(0.4 0.12 265 / 0.15) 0%, transparent 70%)",
+          filter: "blur(80px)",
+        }}
+        animate={{
+          x: [0, 60, 0],
+          y: [0, -30, 0],
+        }}
+        transition={{
+          duration: 30,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        initial={{ top: "5%", left: "55%" }}
+      />
+
+      {/* Secondary orb - warm accent */}
+      <motion.div
+        className="absolute h-[400px] w-[400px] rounded-full"
+        style={{
+          background:
+            "radial-gradient(circle, oklch(0.5 0.1 75 / 0.08) 0%, transparent 70%)",
           filter: "blur(60px)",
         }}
         animate={{
-          x: [0, 100, 0],
-          y: [0, -50, 0],
-          scale: [1, 1.1, 1],
+          x: [0, -40, 0],
+          y: [0, 40, 0],
         }}
         transition={{
-          duration: 20,
+          duration: 35,
           repeat: Infinity,
-          ease: "linear",
+          ease: "easeInOut",
         }}
-        initial={{ top: "10%", left: "60%" }}
+        initial={{ top: "45%", left: "5%" }}
       />
 
-      {/* Gold orb */}
+      {/* Tertiary orb - subtle pink */}
       <motion.div
-        className="absolute h-[400px] w-[400px] rounded-full opacity-20"
+        className="absolute h-[350px] w-[350px] rounded-full"
         style={{
           background:
-            "radial-gradient(circle, oklch(0.6 0.15 85) 0%, transparent 70%)",
-          filter: "blur(50px)",
+            "radial-gradient(circle, oklch(0.45 0.1 300 / 0.08) 0%, transparent 70%)",
+          filter: "blur(70px)",
         }}
         animate={{
-          x: [0, -80, 0],
-          y: [0, 60, 0],
-          scale: [1, 1.15, 1],
+          x: [0, 30, 0],
+          y: [0, 50, 0],
         }}
         transition={{
           duration: 25,
           repeat: Infinity,
-          ease: "linear",
+          ease: "easeInOut",
         }}
-        initial={{ top: "50%", left: "10%" }}
-      />
-
-      {/* Rose orb */}
-      <motion.div
-        className="absolute h-[350px] w-[350px] rounded-full opacity-15"
-        style={{
-          background:
-            "radial-gradient(circle, oklch(0.55 0.18 320) 0%, transparent 70%)",
-          filter: "blur(45px)",
-        }}
-        animate={{
-          x: [0, 60, 0],
-          y: [0, 80, 0],
-          scale: [1, 1.2, 1],
-        }}
-        transition={{
-          duration: 18,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-        initial={{ bottom: "20%", right: "20%" }}
+        initial={{ bottom: "15%", right: "15%" }}
       />
     </div>
   );

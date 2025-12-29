@@ -1,13 +1,13 @@
 "use client";
 
 import {
+  type MotionStyle,
   motion,
   useMotionValue,
   useSpring,
   useTransform,
-  type MotionStyle,
 } from "framer-motion";
-import { useRef, type ReactNode, type MouseEvent } from "react";
+import { type MouseEvent, type ReactNode, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 interface GlowCardProps {
@@ -19,10 +19,10 @@ interface GlowCardProps {
 }
 
 const glowColors = {
-  violet: "rgba(139, 92, 246, 0.15)",
-  gold: "rgba(229, 185, 127, 0.15)",
-  rose: "rgba(244, 114, 182, 0.15)",
-  emerald: "rgba(110, 231, 183, 0.15)",
+  violet: "oklch(0.55 0.18 265 / 0.12)",
+  gold: "oklch(0.72 0.12 75 / 0.12)",
+  rose: "oklch(0.65 0.16 350 / 0.12)",
+  emerald: "oklch(0.65 0.14 165 / 0.12)",
 };
 
 export function GlowCard({
@@ -30,13 +30,13 @@ export function GlowCard({
   className,
   glowColor = "violet",
   enableTilt = true,
-  tiltAmount = 5,
+  tiltAmount = 4,
 }: GlowCardProps) {
   const ref = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const springConfig = { stiffness: 300, damping: 30 };
+  const springConfig = { stiffness: 350, damping: 35 };
   const springX = useSpring(mouseX, springConfig);
   const springY = useSpring(mouseY, springConfig);
 
@@ -61,7 +61,7 @@ export function GlowCard({
     background: useTransform(
       [springX, springY],
       ([x, y]) =>
-        `radial-gradient(circle at ${50 + (x as number) * 100}% ${50 + (y as number) * 100}%, ${glowColors[glowColor]}, transparent 50%)`
+        `radial-gradient(circle at ${50 + (x as number) * 80}% ${50 + (y as number) * 80}%, ${glowColors[glowColor]}, transparent 60%)`,
     ),
   };
 
@@ -80,22 +80,28 @@ export function GlowCard({
             }
           : undefined
       }
-      whileHover={{ scale: 1.02 }}
-      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+      whileHover={{ scale: 1.01 }}
+      transition={{ type: "spring", stiffness: 400, damping: 35 }}
       className={cn(
-        "relative overflow-hidden rounded-2xl",
-        "bg-gradient-to-br from-white/[0.08] to-white/[0.02]",
-        "backdrop-blur-xl",
-        "border border-white/[0.08]",
-        "shadow-[0_8px_32px_rgba(0,0,0,0.3)]",
-        className
+        "relative overflow-hidden rounded-xl",
+        "bg-[oklch(0.1_0.015_265)]",
+        "border border-white/[0.06]",
+        "shadow-[0_4px_24px_rgba(0,0,0,0.2)]",
+        "transition-shadow duration-300",
+        "hover:shadow-[0_8px_32px_rgba(0,0,0,0.25)]",
+        "hover:border-white/[0.08]",
+        className,
       )}
     >
       {/* Glow effect layer */}
       <motion.div
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-400 group-hover:opacity-100"
         style={glowStyle}
       />
+
+      {/* Subtle top highlight */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+
       <div className="relative z-10">{children}</div>
     </motion.div>
   );
@@ -111,17 +117,17 @@ export function GlassCard({
 }) {
   return (
     <motion.div
-      whileHover={{ scale: 1.01 }}
-      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+      whileHover={{ scale: 1.005 }}
+      transition={{ type: "spring", stiffness: 400, damping: 35 }}
       className={cn(
-        "relative overflow-hidden rounded-2xl",
-        "bg-gradient-to-br from-white/[0.08] to-white/[0.02]",
-        "backdrop-blur-xl",
-        "border border-white/[0.08]",
-        "shadow-[0_8px_32px_rgba(0,0,0,0.3)]",
-        className
+        "relative overflow-hidden rounded-xl",
+        "bg-[oklch(0.1_0.015_265)]",
+        "border border-white/[0.06]",
+        "shadow-[0_4px_24px_rgba(0,0,0,0.2)]",
+        className,
       )}
     >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
       {children}
     </motion.div>
   );

@@ -15,7 +15,7 @@ interface FadeInProps {
 
 const getDirectionVariants = (
   direction: string,
-  distance: number
+  distance: number,
 ): Variants => ({
   hidden: {
     opacity: 0,
